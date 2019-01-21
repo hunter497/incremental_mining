@@ -1,34 +1,39 @@
+// 'Levels' of the game, increase these every time the user prestiges. Precious metal mines that have higher value metals.
 var MINE_LEVELS_ENUM = {
-    "coal": 1,
-    "iron": 5,
-    "gold": 50,
-    "diamond": 500,
-    "admantite": 10000,
-    "space_rock": 1000000
+    coal: 1,
+    iron: 5,
+    gold: 50,
+    diamond: 500,
+    admantite: 10000,
+    space_rock: 1000000
 }
 
+// Pickaxe upgrades that allow the user to mine a larger quantity of precious metals.
 var PICKAXE_UPGRADES_ENUM = {
-    "basic": 1,
-    "iron": 2,
-    "adamantite": 4,
-    "space_rock": 8
+    basic: 1,
+    iron: 2,
+    adamantite: 4,
+    space_rock: 8
 }
 
 var gameData = {}
 
+// Setup and runtime IFFEs, these can get complicated quickly.
 (function() {
     var setupGame = function() {
         gameData = {
-            cash: 0,
+            cash: 1000,
             cashPerClick: 1,
             cashPerClickCost: 10,
             autoMinerLevel: 1,
             autoMinerCost: 50,
             cashPerSecond: 0,
-            pickaxeLevel: PICKAXE_UPGRADES_ENUM.space_rock
+            pickaxeLevel: PICKAXE_UPGRADES_ENUM.basic,
+            mineLevel: MINE_LEVELS_ENUM.coal,
+            prestigeCost: 1000,
         }
     };
-    window.onload = setupGame;
+    window.onload = setupGame();
 
     var mainGameLoop = window.setInterval(function() {
         generateCash();
@@ -44,6 +49,7 @@ var gameData = {}
     }
 }());
 
+//TODO: split out these to another file, these will get unwieldy quickly as features are added.
 function mine() {
     gameData.cash += gameData.cashPerClick * gameData.pickaxeLevel;
     document.getElementById("cashMined").innerHTML = "$" + gameData.cash + " Mined";
@@ -77,4 +83,21 @@ function generateCash() {
 
 function saveGame() {
     localStorage.setItem('minerSave', JSON.stringify(gameData));
+}
+
+function prestige() {
+    if(gameData.cash >= gameData.prestigeCost) {
+        gameData = {
+            cash: 1000,
+            cashPerClick: 1,
+            cashPerClickCost: 10,
+            autoMinerLevel: 1,
+            autoMinerCost: 50,
+            cashPerSecond: 0,
+            pickaxeLevel: PICKAXE_UPGRADES_ENUM.basic,
+            mineLevel: MINE_LEVELS_ENUM.iron,
+            prestigeCost: 1000,
+        }
+        console.log(gameData);
+    }
 }
