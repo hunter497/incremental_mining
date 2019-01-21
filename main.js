@@ -1,56 +1,80 @@
-var gameData = {
-    gold: 0,
-    goldPerClick: 1,
-    goldPerClickCost: 10,
-    autoMinerLevel: 0,
-    autoMinerCost: 50,
-    goldPerSecond: 0,
+var MINE_LEVELS_ENUM = {
+    "coal": 1,
+    "iron": 5,
+    "gold": 50,
+    "diamond": 500,
+    "admantite": 10000,
+    "space_rock": 1000000
 }
 
-function mineGold() {
-    gameData.gold += gameData.goldPerClick;
-    document.getElementById("goldMined").innerHTML = gameData.gold + " Gold Mined";
+var PICKAXE_UPGRADES_ENUM = {
+    "basic": 1,
+    "iron": 2,
+    "adamantite": 4,
+    "space_rock": 8
 }
 
-function buyGoldPerClick() {
-    if(gameData.gold >= gameData.goldPerClickCost) {
-        gameData.gold -= gameData.goldPerClickCost;
-        gameData.goldPerClick += 1;
-        gameData.goldPerClickCost += 2;
-        document.getElementById("goldMined").innerHTML = gameData.gold + " Gold Mined";
-        document.getElementById("perClickUpgrade").innerHTML = "Upgrade Pickaxe (Currently Level " + gameData.goldPerClick + ") Cost: " + gameData.goldPerClickCost + " Gold";
+var gameData = {}
+
+(function() {
+    var setupGame = function() {
+        gameData = {
+            cash: 0,
+            cashPerClick: 1,
+            cashPerClickCost: 10,
+            autoMinerLevel: 1,
+            autoMinerCost: 50,
+            cashPerSecond: 0,
+            pickaxeLevel: PICKAXE_UPGRADES_ENUM.space_rock
+        }
+    };
+    window.onload = setupGame;
+
+    var mainGameLoop = window.setInterval(function() {
+        generateCash();
+    }, 1000);
+    
+    var saveGameLoop = window.setInterval(function() {
+        saveGame();
+    }, 15000);
+    
+    var savedGame = JSON.parse(localStorage.getItem("minerSave"));
+    if (savedGame !== null) {
+        gameData = savedGame;
+    }
+}());
+
+function mine() {
+    gameData.cash += gameData.cashPerClick * gameData.pickaxeLevel;
+    document.getElementById("cashMined").innerHTML = "$" + gameData.cash + " Mined";
+}
+
+function buyPerClickUpgrade() {
+    if(gameData.cash >= gameData.cashPerClickCost) {
+        gameData.cash -= gameData.cashPerClickCost;
+        gameData.cashPerClick += 1;
+        gameData.cashPerClickCost += 2;
+        document.getElementById("cashMined").innerHTML = "$" + gameData.cash + " Mined";
+        document.getElementById("perClickUpgrade").innerHTML = "Upgrade Pickaxe (Currently Level " + gameData.cashPerClick + ") Cost: $" + gameData.cashPerClickCost;
     }
 }
 
 function buyAutoMiner() {
-    if(gameData.gold >= gameData.autoMinerCost) {
-        gameData.gold -= gameData.autoMinerCost;
-        gameData.goldPerSecond += 1;
+    if(gameData.cash >= gameData.autoMinerCost) {
+        gameData.cash -= gameData.autoMinerCost;
+        gameData.cashPerSecond += 1;
         gameData.autoMinerCost = Math.floor(gameData.autoMinerCost * 1.25);
         gameData.autoMinerLevel += 1;
-        document.getElementById("goldMined").innerHTML = gameData.gold + " Gold Mined";
-        document.getElementById("buyAutoMiner").innerHTML = "Buy auto miner (Currently Level " + gameData.autoMinerLevel + ") Cost: " + gameData.autoMinerCost + " Gold";
+        document.getElementById("cashMined").innerHTML = "$" + gameData.cash + " Mined";
+        document.getElementById("buyAutoMiner").innerHTML = "Buy auto miner (Currently Level " + gameData.autoMinerLevel + ") Cost: $" + gameData.autoMinerCost;
     }
 }
 
-function generateGold() {
-    gameData.gold += gameData.goldPerSecond;
-    document.getElementById("goldMined").innerHTML = gameData.gold + " Gold Mined";
+function generateCash() {
+    gameData.cash += gameData.cashPerSecond;
+    document.getElementById("cashMined").innerHTML = "$" + gameData.cash + " Mined";
 }
 
 function saveGame() {
-    localStorage.setItem('goldMinerSave', JSON.stringify(gameData));
-}
-
-var mainGameLoop = window.setInterval(function() {
-    generateGold();
-}, 1000);
-
-var saveGameLoop = window.setInterval(function() {
-    saveGame();
-}, 15000);
-
-var savedGame = JSON.parse(localStorage.getItem("goldMinerSave"));
-if (savedGame !== null) {
-    gameData = savedGame;
+    localStorage.setItem('minerSave', JSON.stringify(gameData));
 }

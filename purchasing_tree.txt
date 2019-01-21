@@ -1,0 +1,22 @@
+- Improved Pickaxe: Increase click mining by 1 (Effected by pick type)
+- AutoMiner: 1 gold per second, increase cost by 1.25 every purchase
+
+Mine Upgrades:
+- coal
+- Iron
+- gold
+- diamond
+- Adamantite
+- Space Rock
+- Finite Stones
+
+Other Items:
+- Dynamite
+- Speed up sluicing
+
+
+Pickaxe Upgrades
+- Iron Pickaxe: Doubles click rate, one time purchase
+- Steel Pickaxe: Doubles click rate, one time purchase
+- Adamantite Pickaxe: Doubles click rate, one time purchase
+- Space Rock**** Pickaxe: Quadruples click rate, one time purchase
